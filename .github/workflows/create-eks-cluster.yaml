@@ -46,5 +46,7 @@ jobs:
 
     - name: Configure IRSA role
       run: |
-        bash irsa-config.sh
+        bash irsa-config.sh app1
+        bash irsa-config.sh app2
+        bash irsa-config.sh connaisseur
       working-directory: "./eks_cluster"

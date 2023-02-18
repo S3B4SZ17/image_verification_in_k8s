@@ -1,0 +1,78 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: connaisseur
+  name: ecr-token-helper
+rules:
+  - apiGroups: [""]
+    resources:
+      - secrets
+      - serviceaccounts
+      - serviceaccounts/token
+    verbs:
+      - 'delete'
+      - 'create'
+      - 'patch'
+      - 'get'
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ecr-token-helper
+  namespace: connaisseur
+subjects:
+  - kind: ServiceAccount
+    name: connaisseur-sa
+    namespace: connaisseur
+roleRef:
+  kind: Role
+  name: ecr-token-helper
+  apiGroup: ""
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: merge
+    eks.amazonaws.com/role-arn: arn:aws:iam::809870132669:role/Readonly-ECR-connaisseur
+  name: connaisseur-sa
+  namespace: connaisseur
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ecr-token-helper
+  namespace: connaisseur
+spec:
+  schedule: '0 */10 * * *'
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: connaisseur-sa
+          containers:
+            - command:
+                - /bin/sh
+                - -c
+                - |-
+                  TOKEN=`aws ecr get-login-password --region \$REGION | cut -d' ' -f6`
+                  kubectl delete secret -n connaisseur --ignore-not-found \$SECRET_NAME
+                  kubectl create secret docker-registry -n connaisseur \$SECRET_NAME \
+                  --docker-server=\$ECR_REPOSITORY \
+                  --docker-username=AWS \
+                  --docker-password=\$TOKEN \
+                  --namespace=connaisseur
+                  kubectl patch serviceaccount connaisseur-sa -p '{"imagePullSecrets":[{"name":"'\$SECRET_NAME'"}]}' -n connaisseur
+              env:
+                - name: SECRET_NAME
+                  value: 'ecr-token'
+                - name: REGION
+                  value: us-east-1
+                - name: ECR_REPOSITORY
+                  value: 809870132669.dkr.ecr.us-east-1.amazonaws.com
+              image: gtsopour/awscli-kubectl:latest
+              imagePullPolicy: IfNotPresent
+              name: ecr-token-helper
+          restartPolicy: OnFailure

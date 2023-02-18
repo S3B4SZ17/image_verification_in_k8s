@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Setting up role for app2 IRSA configuration
+# Setting up role for app-# IRSA configuration
 
-ROLE_NAME=Readonly-ECR # the name of your IAM role
-SERVICE_ACCOUNT_NAME=app2-sa # the name of your service account name
-SERVICE_ACCOUNT_NAMESPACE=app2 # the namespace for your service account
+ROLE_NAME="Readonly-ECR-$1" # the name of your IAM role
+SERVICE_ACCOUNT_NAME="$1-sa" # the name of your service account name
+SERVICE_ACCOUNT_NAMESPACE="$1" # the namespace for your service account
 PROVIDER_ARN=$(terraform output -json | jq -r .oidc_provider_arn.value) # the ARN of your OIDC provider
 ISSUER_HOSTPATH=$(aws eks describe-cluster --name demo-eks --query cluster.identity.oidc.issuer --output text | cut -f 3- -d'/') # the host path of your OIDC issuer
 

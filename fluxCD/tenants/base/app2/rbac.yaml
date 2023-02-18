@@ -16,7 +16,7 @@ metadata:
     toolkit.fluxcd.io/tenant: app2
   annotations:
     kustomize.toolkit.fluxcd.io/ssa: merge
-    eks.amazonaws.com/role-arn: arn:aws:iam::809870132669:role/Readonly-ECR
+    eks.amazonaws.com/role-arn: arn:aws:iam::809870132669:role/Readonly-ECR-app2
   name: app2-sa
   namespace: app2
 

@@ -42,3 +42,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 chatbot-automation.zip
+
+**GITHUB_TOKEN
+**assume-policy.json
