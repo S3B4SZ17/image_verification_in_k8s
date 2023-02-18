@@ -29,6 +29,30 @@ cat > assume-policy.json << EOF
 }
 EOF
 
+cat > kms-policy.json << EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:GenerateDataKey*",
+                "kms:ReEncrypt*",
+                "kms:GetPublicKey",
+                "kms:ReEncrypt*",
+                "kms:Sign",
+                "kms:Verify"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+
 aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document file://assume-policy.json
 aws iam update-assume-role-policy --role-name $ROLE_NAME --policy-document file://assume-policy.json
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+aws iam put-role-policy --role-name $ROLE_NAME --policy-name KMS-cosign --policy-document file://push-ecr-policy.json

@@ -44,4 +44,4 @@ terraform.rc
 chatbot-automation.zip
 
 **GITHUB_TOKEN
-**assume-policy.json
+**policy.json
