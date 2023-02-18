@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infrastructure
+  namespace: flux-system
+spec:
+  interval: 1m0s # detect drift and undo kubectl edits every 10 minutes
+  prune: true # remove stale resources from cluster
+  wait: true # wait for all applied resources to become ready
+  retryInterval: 2m0s # retry every two minutes on apply or waiting failures
+  force: true # enable this to recreate resources on immutable fields changes
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/overlays/clusters/demo-eks
+  postBuild:
+    substitute:
+      cluster_env: "dev"
+      cluster_region: "us-east-1"
+      cluster_name: "demo-eks"
+      account_id: "809870132669"

@@ -1,0 +1,29 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: app1
+  namespace: app1
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  secretRef:
+    name: app1-auth
+  url: ssh://git@github.com/S3B4SZ17/pong-app
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: app1
+  namespace: app1
+spec:
+  interval: 1m0s
+  path: ./
+  prune: false
+  serviceAccountName: app1-saapp1
+  sourceRef:
+    kind: GitRepository
+    name: app1
+

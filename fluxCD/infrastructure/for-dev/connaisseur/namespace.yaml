@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: connaisseur
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
+    kustomize.toolkit.fluxcd.io/prune: disabled
+    pod-security.kubernetes.io/enforce: "privileged"
+    environment: "${cluster_env:=dev}"
+    region: "${cluster_region}"
+    cluster_name: "${cluster_name}"
+    account_id: "${account_id}"
+    name: actions-runner-controller
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: merge

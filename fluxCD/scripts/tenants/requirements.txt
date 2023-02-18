@@ -1,0 +1,4 @@
+kubernetes
+GitPython
+pyyaml>=5.4
+jinja2

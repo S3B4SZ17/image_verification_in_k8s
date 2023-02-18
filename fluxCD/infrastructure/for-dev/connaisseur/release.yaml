@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: connaisseur
+  namespace: connaisseur
+  annotations:
+    meta.helm.sh/release-namespace: "connaisseur"
+    meta.helm.sh/release-name: connaisseur
+  labels:
+    environment: "${cluster_env:=dev}"
+    region: "${cluster_region}"
+    cluster_name: "${cluster_name}"
+    account_id: "${account_id}"
+spec:
+  releaseName: connaisseur
+  chart:
+    spec:
+      chart: connaisseur
+      version: "1.4.4"
+      sourceRef:
+        kind: HelmRepository
+        name: connaisseur
+        namespace: flux-system
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: connaisseur-values
