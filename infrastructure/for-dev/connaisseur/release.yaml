@@ -16,7 +16,7 @@ spec:
   chart:
     spec:
       chart: connaisseur
-      version: "1.4.4"
+      version: "1.5.0"
       sourceRef:
         kind: HelmRepository
         name: connaisseur

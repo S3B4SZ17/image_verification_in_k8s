@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - ecr-token-helper.yaml
   - release.yaml
+  - repository.yaml
 configMapGenerator:
   - name: connaisseur-values
     files:

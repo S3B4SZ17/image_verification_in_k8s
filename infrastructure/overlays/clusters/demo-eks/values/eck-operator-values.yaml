@@ -1,2 +1,0 @@
-# managedNamespaces is the set of namespaces that the operator manages. Leave empty to manage all namespaces.
-managedNamespaces: ["connaisseur", "app1", "app2"]

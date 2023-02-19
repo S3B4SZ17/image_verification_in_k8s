@@ -55,4 +55,3 @@ EOF
 aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document file://assume-policy.json
 aws iam update-assume-role-policy --role-name $ROLE_NAME --policy-document file://assume-policy.json
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-aws iam put-role-policy --role-name $ROLE_NAME --policy-name KMS-cosign --policy-document file://push-ecr-policy.json

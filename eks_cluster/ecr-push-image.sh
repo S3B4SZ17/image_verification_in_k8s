@@ -70,4 +70,4 @@ EOF
 
 aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document file://push-ecr-assume-policy.json
 aws iam put-role-policy --role-name $ROLE_NAME --policy-name Push-ECR --policy-document file://push-ecr-policy.json
-aws iam put-role-policy --role-name $ROLE_NAME --policy-name KMS-cosign --policy-document file://push-ecr-policy.json
+aws iam put-role-policy --role-name $ROLE_NAME --policy-name KMS-cosign --policy-document file://kms-policy.json
