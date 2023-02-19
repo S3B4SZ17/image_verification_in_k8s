@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: sysdig-values
+    namespace: sysdig
+data:
+    values.yaml: ENC[AES256_GCM,data:PLCSKXX4zhaxGllR3eX422jjTsdogl9EecdfFyGooB/SEcQYguc5NPH+PvBrjApqoSHnKu6bD77/CCMjzYuYJSz/Nf5TXpzE3HRz7UDh2MQNqu485IGbnBYQCVI6fe4emduXdgv/RO6EOtCFkbygQXVsSvN3YGWrK/LlzmRYYyazx65GrOAKwzNm9+U3sfyI5NGdChtNzUBeiGZaNN2V+/IOLog1btW6RHWJMd/ux1GgL5orAXf5rSNKY+eCQDvBKuCGY8pG4NyPLgBy8/cXXSZswai0YRST0akfA6rBrsgqEbe7hLK8VPZqSaJL1bBvVl3NDIHWUpELoU9aBdF8ApnDFjQ62da7gSy4ZIJCDtrBalO7PhELYEm2Iz4S7jfYBAMXmj3OFZtG+ZgLRLXsvI4uB89AGJbDmE5WbdDiFUijFpYNgQXgO51DRLpyyeU6qlvS0v+MfdadYcbfIbtEKsDAy7CWfdYTawWdw0ik6fP7C1yk9M7/YE/6SeBb1egE,iv:UCr/QD/57wIV9AWAqKM/3B0YNlzqDXY27mzSnJCpf08=,tag:17LtOxTp41qwZM5l+YtqWQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age: []
+    lastmodified: "2023-02-19T08:00:19Z"
+    mac: ENC[AES256_GCM,data:HXa9lkSdO+D1K6f1UHBdtJ7bkdoqjFvafKdrIlLm9nJBoC7MrL2E6Ell9ut6Dm5g/8GOVXV8ouG4W0XDBhaCxfEawfZ8eIo45MKXrrmWSA8mVDY9THB2HtnWNXOlM1iWCs037tnfUsKc+WduHslSCG6P8dK0Klir4L6sDhfyCRU=,iv:1nXBfK/PyXDwBIt8QEdwxyegw664tMqcxpeX489rMNk=,tag:VTcKvNvLeeyXDMpA6r+N+w==,type:str]
+    pgp:
+        - created_at: "2023-02-19T08:00:17Z"
+          enc: |
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA3b0dhiB9EKgAQ/+POUF5ZWYLTMCw3fVLx4kQ2qeyk42udrS9CT+JfUSsVRz
+            TjKGJR3W2e/jk9Uale7goWdEGObBL6CVZMhNr24dLEaSskGF0FHfX/iD/J4Ly6dd
+            oCrE1rEKNgf3pBtJ/5i0WHEG6cSJkEKUu4W7hDZNon43aQuBUwkxehzK3L3vsXr2
+            C+HlwMO7K6axfE5/3F+xcRaA9Iz/NBFDCq8TeerVHM1ZW5zAZ5YHtTfJvTKyiViH
+            gUF3zcLDGCTVGIfEk/FX9Y/1QgJyPONkctz28iNaL7PAeIKlxK5Shk9xgGJIO9jk
+            HJ6aLRF5aJYtWt4N4BH1q5UvybR6jCdxCHm4TCa5sKHpTzOX0BkEUZ14yw4uunWL
+            aCEVQz4J9HPpc3MMuOdRFX63jfCGztaPK20HgXKrc/UOFJozKbbZuZGrv9ze21bn
+            AxmazuaMP/5nwi6HaPe/3WUJBHekjMFjt/ixXZvDQZLamun8OYMxTc8qnZ7UZrg+
+            Eqh/hOnEbHqV6wHi+XEewPAcdfXNfd2ykfXTqC+uzi6FZBJ1tPDq1JdLFYy4lQlc
+            OIhm/GNDK4AyqTkApcYKDmXWHkc8wH+5AMZcaj40h/UAsI3rDwrwSHyt4Pq1tX/7
+            oqg5EiJ5A8r/tTfpqUGEo4MZqgpHRWvp8OQ3VdWNYsllujBTC/nl/cUa9lEkmArU
+            aAEJAhCqod9zhvgqOT3o++SVI4K7y1jzO+UA7jDZF4+rybRXa78o9V+/v0OJNIgw
+            9kh1OBqL/3hoMKljEMmsZzCJSxBTnAFRAiDdE2pdEDiHyRIqWe6yar+IXR4rZYgA
+            CSdu3TlLyulC
+            =6CsH
+            -----END PGP MESSAGE-----
+          fp: FC4CF79A509838788FB28CE6DB2BA9E53416BBA0
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3
