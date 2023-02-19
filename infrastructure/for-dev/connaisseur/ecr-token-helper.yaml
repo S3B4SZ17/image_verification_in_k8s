@@ -57,14 +57,14 @@ spec:
                 - /bin/sh
                 - -c
                 - |-
-                  TOKEN=`aws ecr get-login-password --region \$REGION | cut -d' ' -f6`
-                  kubectl delete secret -n connaisseur --ignore-not-found \$SECRET_NAME
-                  kubectl create secret docker-registry -n connaisseur \$SECRET_NAME \
-                  --docker-server=\$ECR_REPOSITORY \
+                  TOKEN=`aws ecr get-login-password --region $REGION | cut -d' ' -f6`
+                  kubectl delete secret -n connaisseur --ignore-not-found $SECRET_NAME
+                  kubectl create secret docker-registry -n connaisseur $SECRET_NAME \
+                  --docker-server=$ECR_REPOSITORY \
                   --docker-username=AWS \
-                  --docker-password=\$TOKEN \
+                  --docker-password=$TOKEN \
                   --namespace=connaisseur
-                  kubectl patch serviceaccount connaisseur-sa -p '{"imagePullSecrets":[{"name":"'\$SECRET_NAME'"}]}' -n connaisseur
+                  kubectl patch serviceaccount connaisseur-sa -p '{"imagePullSecrets":[{"name":"'$SECRET_NAME'"}]}' -n connaisseur
               env:
                 - name: SECRET_NAME
                   value: 'ecr-token'

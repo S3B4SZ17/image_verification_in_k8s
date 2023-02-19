@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: connaisseur
-  namespace: connaisseur
+  namespace: flux-system
 spec:
   interval: 30m
   url: https://s3b4sz17.github.io/connaisseur/helm

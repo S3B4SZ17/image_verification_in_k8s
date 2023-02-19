@@ -1,7 +1,0 @@
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sysdig-key
-data:
-  sysdig: "Authorization: Bearer ee59a0ea-a9e8-4045-bcf4-281cc9f156d1"

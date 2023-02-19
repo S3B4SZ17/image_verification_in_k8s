@@ -10,6 +10,9 @@ validators:
   - name: kms_key
     key: |
       awskms:///arn:aws:kms:us-east-1:809870132669:alias/cosign-key
+- name: allow
+  type: static
+  approve: true
 
 auth:
   secret_name: ecr-token
@@ -19,6 +22,8 @@ policy:
   validator: myvalidator
   with:
     key: kms_key
+- pattern: "*:*"
+  validator: allow
 
 alerting:
   cluster_identifier: demo-eks
@@ -28,10 +33,8 @@ alerting:
       - template: sysdig
         receiver_url: https://us2.app.sysdig.com/api/v1/eventsDispatch/ingest
         fail_if_alert_sending_fails: true
-        custom_headers: []
   reject_request:
     templates:
       - template: sysdig
         receiver_url: https://us2.app.sysdig.com/api/v1/eventsDispatch/ingest
         fail_if_alert_sending_fails: true
-        custom_headers: []

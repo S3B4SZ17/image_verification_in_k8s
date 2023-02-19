@@ -26,13 +26,12 @@ spec:
     remediation:
       retries: 3
   valuesFrom:
-    - kind: ConfigMap
+    # - kind: ConfigMap
+    #   name: connaisseur-values
+    # - kind: Secret
+    #   name: sysdig-key
+    #   valuesKey: sysdig
+    #   targetPath: alerting.admit_request.templates[0].custom_headers[0]
+    #   NOTE: got error described in this issue: https://github.com/fluxcd/flux2/issues/2330
+    - kind: Secret
       name: connaisseur-values
-    - kind: Secret
-      name: sysdig-key
-      valuesKey: sysdig
-      targetPath: alerting.admit_request.templates[0].custom_headers[0]
-    - kind: Secret
-      name: sysdig-key
-      valuesKey: sysdig
-      targetPath: alerting.reject_request.templates[0].custom_headers[0]
