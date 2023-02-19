@@ -4,4 +4,4 @@ metadata:
   name: app1
   namespace: app1
 spec:
-  path: ./deployments/dev/demo-eks
+  path: ./deployments/dev/demo-eks/app1

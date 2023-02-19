@@ -20,3 +20,18 @@ policy:
   with:
     key: kms_key
 
+alerting:
+  cluster_identifier: demo-eks
+  admit_request:
+    # Creating a new template called sysdig.json inside ./connaisseur/helm/alert_payload_templates
+    templates:
+      - template: sysdig
+        receiver_url: https://us2.app.sysdig.com/api/v1/eventsDispatch/ingest
+        fail_if_alert_sending_fails: true
+        custom_headers: []
+  reject_request:
+    templates:
+      - template: sysdig
+        receiver_url: https://us2.app.sysdig.com/api/v1/eventsDispatch/ingest
+        fail_if_alert_sending_fails: true
+        custom_headers: []

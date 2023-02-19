@@ -6,6 +6,7 @@ metadata:
     goldilocks.fairwinds.com/enabled: "true"
     toolkit.fluxcd.io/tenant: app2
     kustomize.toolkit.fluxcd.io/prune: disabled
+    securesystemsengineering.connaisseur/webhook: ignore
   name: app2
 
 ---

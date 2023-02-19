@@ -28,3 +28,11 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: connaisseur-values
+    - kind: Secret
+      name: sysdig-key
+      valuesKey: sysdig
+      targetPath: alerting.admit_request.templates[0].custom_headers[0]
+    - kind: Secret
+      name: sysdig-key
+      valuesKey: sysdig
+      targetPath: alerting.reject_request.templates[0].custom_headers[0]

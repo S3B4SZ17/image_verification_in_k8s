@@ -4,4 +4,4 @@ metadata:
   name: connaisseur
 spec:
   interval: 30m
-  url: https://sse-secure-systems.github.io/connaisseur/charts
+  url: https://s3b4sz17.github.io/connaisseur/helm
