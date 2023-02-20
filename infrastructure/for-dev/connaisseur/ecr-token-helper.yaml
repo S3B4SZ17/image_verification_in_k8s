@@ -69,6 +69,9 @@ spec:
                   --docker-password=$TOKEN \
                   --namespace=connaisseur
                   kubectl patch serviceaccount connaisseur-sa -p '{"imagePullSecrets":[{"name":"'$SECRET_NAME'"}]}' -n connaisseur
+                  kubectl annotate serviceaccount -n connaisseur connaisseur-serviceaccount eks.amazonaws.com/role-arn=arn:aws:iam::809870132669:role/Readonly-ECR-connaisseur
+                  kubectl patch serviceaccount connaisseur-serviceaccount -p '{"imagePullSecrets":[{"name":"'$SECRET_NAME'"}]}' -n connaisseur
+                  kubectl patch configmap connaisseur-env -p '{"data":{"AWS_REGION" : "us-east-1"}}' -n connaisseur
               env:
                 - name: SECRET_NAME
                   value: 'ecr-token'

@@ -22,7 +22,7 @@ spec:
   interval: 1m0s
   path: ./
   prune: false
-  serviceAccountName: app2-saapp2
+  serviceAccountName: app2-sa
   sourceRef:
     kind: GitRepository
     name: app2
