@@ -3,7 +3,9 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: connaisseur
-  name: ecr-token-helper
+  name: connaisseur-kms-role
+  labels:
+    app.kubernetes.io/name: connaisseur
 rules:
   - apiGroups: [""]
     resources:
@@ -21,13 +23,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: ecr-token-helper
   namespace: connaisseur
+  labels:
+    app.kubernetes.io/name: connaisseur
 subjects:
   - kind: ServiceAccount
     name: connaisseur-sa
     namespace: connaisseur
 roleRef:
   kind: Role
-  name: ecr-token-helper
+  name: connaisseur-kms-role
   apiGroup: ""
 ---
 apiVersion: v1
@@ -72,7 +76,7 @@ spec:
                   value: us-east-1
                 - name: ECR_REPOSITORY
                   value: 809870132669.dkr.ecr.us-east-1.amazonaws.com
-              image: gtsopour/awscli-kubectl:latest
+              image: 809870132669.dkr.ecr.us-east-1.amazonaws.com/aws_kube:co-signed
               imagePullPolicy: IfNotPresent
               name: ecr-token-helper
           restartPolicy: OnFailure

@@ -3,27 +3,95 @@ namespacedValidation:
   enabled: true
   mode: validate
 
+detectionMode: true
+
 validators:
-- name: myvalidator
-  type: cosign
-  trust_roots:
-  - name: kms_key
-    key: |
-      awskms:///arn:aws:kms:us-east-1:809870132669:alias/cosign-key
-- name: allow
-  type: static
-  approve: true
+  # static validator that allows each image
+  - name: allow
+    type: static
+    approve: true
+  # static validator that denies each image
+  - name: deny
+    type: static
+    approve: false
+  # the `default` validator is used if no validator is specified in image policy
+  - name: default
+    type: notaryv1  # or other supported validator (e.g. "cosign")
+    host: notary.docker.io # configure the notary server for notaryv1 or rekor url for cosign
+    trust_roots:
+    # # the `default` key is used if no key is specified in image policy
+    #- name: default
+    #  key: |  # enter your public key below
+    #    -----BEGIN PUBLIC KEY-----
+    #    <add your public key here>
+    #    -----END PUBLIC KEY-----
+    #cert: |  # in case the trust data host is using a self-signed certificate
+    #  -----BEGIN CERTIFICATE-----
+    #  ...
+    #  -----END CERTIFICATE-----
+    #auth:  # credentials in case the trust data requires authentication
+    #  # either (preferred solution)
+    #  secret_name: mysecret  # reference a k8s secret in the form required by the validator type (check the docs)
+    #  # or (only for notaryv1 validator)
+    #  username: myuser
+    #  password: mypass
+  # pre-configured nv1 validator for public notary from Docker Hub
+  - name: dockerhub-basics
+    type: notaryv1
+    host: notary.docker.io
+    trust_roots:
+      # public key for official docker images (https://hub.docker.com/search?q=&type=image&image_filter=official)
+      # !if not needed feel free to remove the key!
+      - name: docker-official
+        key: |
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEOXYta5TgdCwXTCnLU09W5T4M4r9f
+          QQrqJuADP6U7g5r9ICgPSmZuRHP/1AYUfOQW3baveKsT969EfELKj1lfCA==
+          -----END PUBLIC KEY-----
+      # public key securesystemsengineering repo including Connaisseur images
+      # !this key is critical for Connaisseur!
+      - name: securesystemsengineering-official
+        key: |
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsx28WV7BsQfnHF1kZmpdCTTLJaWe
+          d0CA+JOi8H4REuBaWSZ5zPDe468WuOJ6f71E7WFg3CVEVYHuoZt2UYbN/Q==
+          -----END PUBLIC KEY-----
+  - name: myvalidator
+    type: cosign
+    trust_roots:
+    - name: default
+      key: awskms:///arn:aws:kms:us-east-1:809870132669:alias/cosign-key
 
 auth:
   secret_name: ecr-token
 
+# auth:
+#   k8s_keychain: true
+
 policy:
-- pattern: "809870132669.dkr.ecr.us-east-1.amazonaws.com/pong-app:*"
-  validator: myvalidator
-  with:
-    key: kms_key
-- pattern: "*:*"
-  validator: allow
+  - pattern: "*:*"
+  - pattern: "docker.io/library/*:*"
+    validator: dockerhub-basics
+    with:
+      trust_root: docker-official
+  - pattern: "k8s.gcr.io/*:*"
+    validator: allow
+  - pattern: "docker.io/securesystemsengineering/*:*"
+    validator: dockerhub-basics
+    with:
+      trust_root: securesystemsengineering-official
+  - pattern: "809870132669.dkr.ecr.us-east-1.amazonaws.com/pong-app:co*"
+    validator: myvalidator
+    with:
+      key: val_key
+  - pattern: "809870132669.dkr.ecr.us-east-1.amazonaws.com/aws_kube:co*"
+    validator: myvalidator
+    with:
+      key: val_key
+  - pattern: "docker.io/s3b4s/pong-app:co*"
+    validator: myvalidator
+    with:
+      key: val_key
 
 alerting:
   cluster_identifier: demo-eks
@@ -33,8 +101,11 @@ alerting:
       - template: sysdig
         receiver_url: https://us2.app.sysdig.com/api/v1/eventsDispatch/ingest
         fail_if_alert_sending_fails: true
+        priority: 1
+
   reject_request:
     templates:
       - template: sysdig
         receiver_url: https://us2.app.sysdig.com/api/v1/eventsDispatch/ingest
         fail_if_alert_sending_fails: true
+        priority: 4

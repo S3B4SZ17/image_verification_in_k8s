@@ -37,7 +37,8 @@ cat > push-ecr-policy.json << EOF
                 "ecr:UploadLayerPart",
                 "ecr:InitiateLayerUpload",
                 "ecr:BatchCheckLayerAvailability",
-                "ecr:PutImage"
+                "ecr:PutImage",
+                "ecr:BatchGetImage"
             ],
             "Resource": "*"
         }
