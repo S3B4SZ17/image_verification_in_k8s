@@ -7,11 +7,12 @@ metadata:
   labels:
     app.kubernetes.io/name: connaisseur
 rules:
-  - apiGroups: [""]
+  - apiGroups: ["*"]
     resources:
       - secrets
       - serviceaccounts
       - serviceaccounts/token
+      - deployments
     verbs:
       - 'delete'
       - 'create'
@@ -71,7 +72,8 @@ spec:
                   kubectl patch serviceaccount connaisseur-sa -p '{"imagePullSecrets":[{"name":"'$SECRET_NAME'"}]}' -n connaisseur
                   kubectl annotate serviceaccount -n connaisseur connaisseur-serviceaccount eks.amazonaws.com/role-arn=arn:aws:iam::809870132669:role/Readonly-ECR-connaisseur
                   kubectl patch serviceaccount connaisseur-serviceaccount -p '{"imagePullSecrets":[{"name":"'$SECRET_NAME'"}]}' -n connaisseur
-                  kubectl patch configmap connaisseur-env -p '{"data":{"AWS_REGION" : "us-east-1"}}' -n connaisseur
+                  # Restart pods so they can have access to the AWS credentials trhoguh the serviceAccount
+                  kubectl rollout restart deployment connaisseur-deployment -n connaisseur
               env:
                 - name: SECRET_NAME
                   value: 'ecr-token'
