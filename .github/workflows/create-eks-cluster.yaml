@@ -2,11 +2,33 @@
 name: Create EKS cluster
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
   workflow_dispatch:
+    inputs:
+      plan-only:
+        description: "Terraform plan only"
+        type: boolean
+        default: true
+      apply-only:
+        description: "Terraform apply only"
+        type: boolean
+        default: false
+      destroy_resources:
+        required: false
+        default: false
+        type: boolean
+        description: 'Pass this value as true if resources need to destroied'
+      terraform_lock_id:
+        required: false
+        default: ""
+        type: string
+        description: 'Pass locak id if you have terraform state is locked and it shows error with Lock ID'
+
+env:
+  AWS_REGION: "us-east-1"
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build:
@@ -16,12 +38,15 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
+    - name: Auth to remote tf modules
+      run:
+        git config --global url."https://${{ secrets.GH_TOKEN }}@github.com".insteadOf "https://github.com"
+
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v2
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        role-to-assume: "arn:aws:iam::809870132669:role/github-tf-foundational-deploy-role"
+        aws-region: ${{env.AWS_REGION }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -33,20 +58,37 @@ jobs:
           terraform init
       working-directory: "./eks_cluster"
 
+    - name: Terraform Validation
+      id: validate
+      run: terraform validate -no-color
+      working-directory: "./eks_cluster"
+
     - name: Terraform Plan
       id: plan
-      if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      run: terraform plan -no-color
+      if: ${{ inputs.plan-only == true }}
+      run: terraform plan -no-color -out eks_cluster.out
       working-directory: "./eks_cluster"
+
+    - name: Terraform Unlock
+      id: unlocak
+      if: ${{ inputs.terraform_lock_id != '' }} 
+      run: |
+        terraform force-unlock -force ${{ inputs.terraform_lock_id }}
 
     - name: Terraform Apply
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'workflow_dispatch'
-      run: terraform apply -auto-approve
+      if: |
+        inputs.apply-only == true  && inputs.plan-only == true
+      run: terraform apply -auto-approve eks_cluster.out
       working-directory: "./eks_cluster"
 
-    - name: Configure IRSA role
+    - name: Terraform Destroy
+      if: ${{ inputs.destroy_resources == true }}
       run: |
-        bash irsa-config.sh app1
-        bash irsa-config.sh app2
-        bash irsa-config.sh connaisseur
-      working-directory: "./eks_cluster"
+        terraform destroy -auto-approve -input=false
+
+    # - name: Configure IRSA role
+    #   run: |
+    #     bash irsa-config.sh app1
+    #     bash irsa-config.sh app2
+    #     bash irsa-config.sh connaisseur
+    #   working-directory: "./eks_cluster"
