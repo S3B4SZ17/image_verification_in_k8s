@@ -1,0 +1,26 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: boutique
+  namespace: boutique
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  url: ssh://git@github.com/GoogleCloudPlatform/microservices-demo
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: boutique
+  namespace: boutique
+spec:
+  interval: 1m0s
+  path: ./
+  prune: false
+  serviceAccountName: boutique-sa
+  sourceRef:
+    kind: GitRepository
+    name: boutique

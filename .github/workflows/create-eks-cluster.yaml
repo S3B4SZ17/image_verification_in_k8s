@@ -62,19 +62,20 @@ jobs:
       id: validate
       run: terraform validate -no-color
       working-directory: "./eks_cluster"
-
+      
     - name: Terraform Plan
       id: plan
       if: ${{ inputs.plan-only == true }}
       run: terraform plan -no-color -out eks_cluster.out
       working-directory: "./eks_cluster"
-
+      continue-on-error: true
+      
     - name: Terraform Unlock
       id: unlocak
       if: ${{ inputs.terraform_lock_id != '' }} 
       run: |
         terraform force-unlock -force ${{ inputs.terraform_lock_id }}
-
+    
     - name: Terraform Apply
       if: |
         inputs.apply-only == true  && inputs.plan-only == true

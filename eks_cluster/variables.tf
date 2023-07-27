@@ -7,7 +7,7 @@ variable "region" {
 variable "cluster_name" {
   description = "Name of the cluster"
   type        = string
-  default     = "demo-eks-tf"
+  default     = "demo-eks"
 }
 
 variable "account_id" {
@@ -26,4 +26,10 @@ variable "tf_state_role" {
   description = "IAM role for storing the Terraform state files in S3 buckets"
   type        = string
   default     = "github-tf-state-role"
+}
+
+variable "vpc_name" {
+  description = "Name of the vpc"
+  type        = string
+  default     = "demo-eks_vpc"
 }
