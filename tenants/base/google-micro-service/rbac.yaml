@@ -4,7 +4,6 @@ kind: Namespace
 metadata:
   labels:
     toolkit.fluxcd.io/tenant: boutique
-    kustomize.toolkit.fluxcd.io/prune: disabled
     securesystemsengineering.connaisseur/webhook: ignore
   name: boutique
 
@@ -22,7 +21,7 @@ metadata:
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   labels:
     toolkit.fluxcd.io/tenant: boutique
@@ -39,4 +38,3 @@ subjects:
 - kind: ServiceAccount
   name: boutique-sa
   namespace: boutique
-

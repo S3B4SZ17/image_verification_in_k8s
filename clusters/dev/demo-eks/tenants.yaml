@@ -4,7 +4,7 @@ metadata:
  name: tenants
  namespace: flux-system
 spec:
- interval: 10m0s # detect drift and undo kubectl edits every 10 minutes
+ interval: 1m0s # detect drift and undo kubectl edits every 10 minutes
  prune: true # remove stale resources from cluster
  wait: true # wait for all applied resources to become ready
  retryInterval: 2m0s # retry every two minutes on apply or waiting failures

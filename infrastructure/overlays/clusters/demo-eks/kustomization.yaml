@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
 ################ Release for connaisseur ################
   - ../../../sources/external-sources
-  - ../../../for-dev/connaisseur
+  # - ../../../for-dev/connaisseur
   # - ../../../for-dev/sysdig # not installing the sysdig agent yet
