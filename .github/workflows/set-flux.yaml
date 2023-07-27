@@ -63,7 +63,7 @@ jobs:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: ${{ github.event.inputs.cluster_region }}
 
-      - uses: azure/setup-kubectl@v1
+      - uses: azure/setup-kubectl@v3
 
       - name: Update KubeConfig
         shell: bash
