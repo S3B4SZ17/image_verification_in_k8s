@@ -1,0 +1,100 @@
+---
+name: Flux Bootstrap
+run-name: "Flux bootstrapp ${{ github.event.inputs.cluster_name }} cluster"
+
+# required for aws credentials assume
+permissions:
+  id-token: write
+  contents: write
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      image_automation:
+        type: boolean
+        description: Enable image automation components
+        default: false
+        required: true
+      bootstrap_new_cluster:
+        type: boolean
+        description: Bootstrap new cluster
+        default: false
+        required: true
+      branch:
+        type: choice
+        description: Flux branch reference for the selected cluster 
+        required: true
+        default: "Dev1"
+        options:
+        - main
+        - Dev1
+      cluster_env:
+        description: Environment of the cluster
+        required: true
+        type: choice
+        default: "dev"
+        options:
+          - dev
+      cluster_name:
+        type: choice
+        description: The cluster against to bootstrap Flux
+        default: "demo-eks"
+        options:
+        - demo-eks
+      cluster_region:
+        type: choice
+        description: The cluster's region
+        default: "us-east-1"
+        options:
+          - us-east-1
+
+env:
+  AWS_REGION: "us-east-1"
+
+jobs:
+  flux_bootstrap:
+    runs-on: ubuntu-latest
+    steps:  
+      - uses: actions/checkout@v3
+
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ github.event.inputs.cluster_region }}
+
+      - uses: azure/setup-kubectl@v1
+
+      - name: Update KubeConfig
+        shell: bash
+        run: |
+          aws eks update-kubeconfig --name ${{ github.event.inputs.cluster_name }} --region=${{ github.event.inputs.cluster_region }}
+
+      - name: Setup fluxctl
+        uses: fluxcd/fluxctl-action@master
+      
+      - name: Flux bootstrap new cluster
+        if: ${{ github.event.inputs.bootstrap_new_cluster == 'true' }}
+        run: |
+          flux bootstrap github \
+          --owner=S3B4SZ17 \
+          --repository=image_verification_in_k8s \
+          --branch=${{ github.event.inputs.branch }} \
+          --path=clusters/${{ github.event.inputs.cluster_env }}/${{ github.event.inputs.cluster_name }} \
+          --reconcile --read-write-key
+        env:
+          GITHUB_TOKEN: ${{ secrets.FLUXCD_TOKEN }}
+
+      - name: Install Flux with the image automation components
+        if: ${{ github.event.inputs.image_automation == 'true' }}
+        run: |
+          flux bootstrap github \
+          --components-extra=image-reflector-controller,image-automation-controller \
+          --owner=S3B4SZ17 \
+          --repository=image_verification_in_k8s \
+          --branch=${{ github.event.inputs.branch }} \
+          --path=clusters/${{ github.event.inputs.cluster_env }}/${{ github.event.inputs.cluster_name }} \
+          --read-write-key \
+          --reconcile
+        env:
+          GITHUB_TOKEN: ${{ secrets.FLUXCD_TOKEN }}
